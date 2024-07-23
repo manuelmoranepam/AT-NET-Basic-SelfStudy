@@ -1,7 +1,10 @@
 ﻿using EpamTests.Configurations;
+using EpamTests.Extensions.Configurations;
+using EpamTests.Pages;
 using FrameworkLibrary.Startup;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using System;
 using WebDriverLibrary.Interfaces.Managers;
@@ -9,38 +12,45 @@ using WebDriverLibrary.Interfaces.Managers;
 namespace EpamTests.Tests;
 
 [TestFixture]
+[Parallelizable(ParallelScope.All)]
 public class CareersTest
 {
 	private const string _applicationUrl = "ApplicationUrl";
 
-	private IServiceProvider _services;
-	private IWebDriverManager _driverManager;
+	private readonly IServiceProvider _services;
+	private readonly IWebDriverManager _driverManager;
+	private readonly HomePage _homePage;
+	private readonly ILogger<HomePage> _logger;
 
-	[OneTimeSetUp]
-	public void OneTimeSetup()
+	public CareersTest()
 	{
 		_services = new FrameworkLibraryStartup(
 			new ConfigurationSetup()
 			.GetConfiguration())
 			.GetFrameworkServiceProvider();
+
+		_logger = _services.GetRequiredService<ILogger<HomePage>>();
+		_driverManager = _services.GetRequiredService<IWebDriverManager>();
+
+		_homePage = new HomePage(_logger, _driverManager);
 	}
 
 	[SetUp]
 	public void SetUp()
 	{
-		_driverManager = _services.GetRequiredService<IWebDriverManager>();
+		var url = _services.GetRequiredService<IConfiguration>().GetSectionValue<string>(_applicationUrl);
+
+		_driverManager.NavigateTo(url);
 	}
 
 	[Test]
-	public void GetFrameworkServiceProvider_WhenWebDriverManager_TheInstanceIsNotNull()
+	public void HomePage_WhenClickingTheCareersLink_TheUserLandsOnTheCareersPage()
 	{
-		var url = _services.GetRequiredService<IConfiguration>()
-			.GetSection(_applicationUrl).Value ?? throw new Exception();
+		_homePage.NavigateToCareersPage();
 
-		_driverManager.NavigateTo(url);
 		var actualUrl = _driverManager.GetInstanceOf().Url;
 
-		Assert.That(actualUrl, Is.EqualTo(url));
+		Assert.That(actualUrl.Contains("careers"));
 	}
 
 	[TearDown]

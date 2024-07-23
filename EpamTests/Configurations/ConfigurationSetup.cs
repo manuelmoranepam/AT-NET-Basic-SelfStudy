@@ -5,11 +5,18 @@ namespace EpamTests.Configurations;
 
 internal class ConfigurationSetup
 {
-	public IConfiguration GetConfiguration()
+	private readonly IConfiguration _configuration;
+
+	public ConfigurationSetup()
 	{
-		return new ConfigurationBuilder()
+		_configuration = new ConfigurationBuilder()
 			.SetBasePath(Directory.GetCurrentDirectory())
 			.AddJsonFile("appsettings.json", false, true)
 			.Build();
+	}
+
+	public IConfiguration GetConfiguration()
+	{
+		return _configuration;
 	}
 }

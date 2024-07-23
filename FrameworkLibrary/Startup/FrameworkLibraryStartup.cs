@@ -12,8 +12,10 @@ namespace FrameworkLibrary.Startup;
 public class FrameworkLibraryStartup(IConfiguration configuration)
 {
 	private readonly IServiceProvider _services = new ServiceCollection()
-		.AddLogging(builder => builder.AddConsole())
 		.AddSingleton(configuration)
+		.AddLogging(builder => builder.ClearProviders()
+			.AddConfiguration(configuration.GetSection("Logging"))
+			.AddConsole())
 		.AddSingleton<IWebDriverConfiguration, WebDriverConfiguration>()
 		.AddScoped<IWebDriverManager, SeleniumWebDriverManager>()
 		.BuildServiceProvider();

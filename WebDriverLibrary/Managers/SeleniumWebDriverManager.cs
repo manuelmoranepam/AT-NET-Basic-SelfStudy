@@ -28,11 +28,11 @@ public class SeleniumWebDriverManager : IWebDriverManager
 
 		_webDriver = CreateWebDriver();
 
-		logger.LogInformation("Applying configurations");
+		logger.LogInformation("Applying configurations.");
 
 		ApplyConfigurations();
 
-		logger.LogInformation("Configurations applied");
+		logger.LogInformation("Configurations applied.");
 
 		logger.LogInformation("WebDriverManager instance created.");
 	}

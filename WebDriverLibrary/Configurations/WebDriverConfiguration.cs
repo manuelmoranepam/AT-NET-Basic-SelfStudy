@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using ConfigurationLibrary.Interfaces.Configurations;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using WebDriverLibrary.Enums;
@@ -39,19 +39,13 @@ namespace WebDriverLibrary.Configurations
 		[JsonProperty(nameof(PollingInterval))]
 		public TimeSpan PollingInterval { get; set; }
 
-		public WebDriverConfiguration(ILogger<WebDriverConfiguration> logger, IConfiguration configuration)
+		public WebDriverConfiguration(IConfigurationService configurationService)
 		{
-			ArgumentNullException.ThrowIfNull(logger);
-			ArgumentNullException.ThrowIfNull(configuration);
+			ArgumentNullException.ThrowIfNull(configurationService);
 
-			logger.LogInformation("Creating instance of WebDriverConfiguration.");
-
-			var section = configuration.GetSection("WebDriverConfiguration") ??
-				throw new ArgumentNullException(nameof(configuration));
+			var section = configurationService.GetConfigurationSection<IConfigurationSection>("WebDriverConfiguration");
 
 			section.Bind(this);
-
-			logger.LogInformation("WebDriverConfiguration instance created.");
 		}
 	}
 }

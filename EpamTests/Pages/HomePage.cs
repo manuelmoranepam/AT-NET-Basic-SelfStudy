@@ -1,26 +1,26 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LoggerLibrary.Interfaces.Loggers;
 using OpenQA.Selenium;
 using System;
-using WebDriverLibrary.Interfaces.Managers;
+using WebDriverLibrary.Interfaces.WebDrivers;
 
 namespace EpamTests.Pages;
 
 public partial class HomePage
 {
-	private readonly ILogger<HomePage> _logger;
-	private readonly IWebDriverManager _driverManager;
+	private readonly ILoggerService _loggerService;
+	private readonly IWebDriverService _driverService;
 	private readonly IWebDriver _driver;
 
-	public HomePage(ILogger<HomePage> logger, IWebDriverManager driverManager)
+	public HomePage(ILoggerService loggerService, IWebDriverService driverService)
 	{
-		ArgumentNullException.ThrowIfNull(logger);
-		ArgumentNullException.ThrowIfNull(driverManager);
+		ArgumentNullException.ThrowIfNull(loggerService);
+		ArgumentNullException.ThrowIfNull(driverService);
 
-		_logger = logger;
-		_driverManager = driverManager;
-		_driver = _driverManager.GetInstanceOf();
+		_loggerService = loggerService;
+		_driverService = driverService;
+		_driver = _driverService.GetWebDriver();
 
-		_logger.LogInformation("HomePage instantiation complete.");
+		_loggerService.LogInformation("HomePage instantiation complete.", []);
 	}
 
 	public void NavigateToCareersPage()

@@ -7,14 +7,14 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="Serilog" Version="4.0.1" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
 	</ItemGroup>
 	
 	<ItemGroup>
 		<ProjectReference Include="..\ConfigurationLibrary\ConfigurationLibrary.csproj" />
-		<ProjectReference Include="..\LoggerLibrary\LoggerLibrary.csproj" />
-		<ProjectReference Include="..\WebDriverLibrary\WebDriverLibrary.csproj" />
 	</ItemGroup>
 	
 </Project>

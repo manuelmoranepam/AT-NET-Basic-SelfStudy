@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using WebDriverLibrary.Extensions;
 
 namespace EpamTests.Pages;
@@ -11,14 +10,14 @@ public partial class HomePage
 		try
 		{
 			_driver.WaitUntilElementIsClickable(_careersLinkLocator,
-				_driverManager.GetConfiguration().LongTimeout,
-				_driverManager.GetConfiguration().PollingInterval);
+				_driverService.GetConfiguration().LongTimeout,
+				_driverService.GetConfiguration().PollingInterval);
 
 			CareersLink.Click();
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, message: "Failed to click the careers link with locator {0}.", args: _careersLinkLocator);
+			_loggerService.LogError(ex, message: "Failed to click the careers link with locator {0}.", args: _careersLinkLocator);
 
 			throw;
 		}

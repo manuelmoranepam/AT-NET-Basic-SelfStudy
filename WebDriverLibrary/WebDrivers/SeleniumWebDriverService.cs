@@ -1,40 +1,31 @@
-﻿using Microsoft.Extensions.Logging;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using System;
 using WebDriverLibrary.Enums;
 using WebDriverLibrary.Interfaces.Configurations;
-using WebDriverLibrary.Interfaces.Managers;
+using WebDriverLibrary.Interfaces.WebDrivers;
 using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
 
-namespace WebDriverLibrary.Managers;
+namespace WebDriverLibrary.WebDrivers;
 
-public class SeleniumWebDriverManager : IWebDriverManager
+public class SeleniumWebDriverService : IWebDriverService
 {
 
 	private readonly IWebDriver _webDriver;
 	private readonly IWebDriverConfiguration _driverConfiguration;
 
-	public SeleniumWebDriverManager(ILogger<SeleniumWebDriverManager> logger, IWebDriverConfiguration driverConfiguration)
+	public SeleniumWebDriverService(IWebDriverConfiguration driverConfiguration)
 	{
 		ArgumentNullException.ThrowIfNull(driverConfiguration);
-
-		logger.LogInformation("Creating instance of WebDriverManager.");
 
 		_driverConfiguration = driverConfiguration;
 
 		_webDriver = CreateWebDriver();
 
-		logger.LogInformation("Applying configurations.");
-
 		ApplyConfigurations();
-
-		logger.LogInformation("Configurations applied.");
-
-		logger.LogInformation("WebDriverManager instance created.");
 	}
 
 	private IWebDriver CreateWebDriver()
@@ -133,12 +124,12 @@ public class SeleniumWebDriverManager : IWebDriverManager
 		return _driverConfiguration;
 	}
 
-	public IWebDriver GetInstanceOf()
+	public IWebDriver GetWebDriver()
 	{
 		return _webDriver;
 	}
 
-	public void DisposeOf()
+	public void DisposeWebDriver()
 	{
 		_webDriver.Close();
 		_webDriver.Dispose();

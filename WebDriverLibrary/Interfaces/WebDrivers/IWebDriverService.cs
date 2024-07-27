@@ -1,12 +1,12 @@
 ﻿using OpenQA.Selenium;
 using WebDriverLibrary.Interfaces.Configurations;
 
-namespace WebDriverLibrary.Interfaces.Managers;
+namespace WebDriverLibrary.Interfaces.WebDrivers;
 
-public interface IWebDriverManager
+public interface IWebDriverService
 {
 	IWebDriverConfiguration GetConfiguration();
-	IWebDriver GetInstanceOf();
-	void DisposeOf();
+	IWebDriver GetWebDriver();
+	void DisposeWebDriver();
 	void NavigateTo(string url);
 }

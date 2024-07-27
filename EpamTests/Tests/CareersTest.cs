@@ -1,13 +1,11 @@
-﻿using EpamTests.Configurations;
-using EpamTests.Extensions.Configurations;
+﻿using ConfigurationLibrary.Interfaces.Configurations;
 using EpamTests.Pages;
 using FrameworkLibrary.Startup;
-using Microsoft.Extensions.Configuration;
+using LoggerLibrary.Interfaces.Loggers;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using System;
-using WebDriverLibrary.Interfaces.Managers;
+using WebDriverLibrary.Interfaces.WebDrivers;
 
 namespace EpamTests.Tests;
 
@@ -15,32 +13,33 @@ namespace EpamTests.Tests;
 [Parallelizable(ParallelScope.All)]
 public class CareersTest
 {
+	private const string _appSettingsFilePath = "appsettings.json";
 	private const string _applicationUrl = "ApplicationUrl";
 
 	private readonly IServiceProvider _services;
-	private readonly IWebDriverManager _driverManager;
-	private readonly HomePage _homePage;
-	private readonly ILogger<HomePage> _logger;
+
+	private ILoggerService _loggerService;
+	private IWebDriverService _driverService;
+	private HomePage _homePage;
 
 	public CareersTest()
 	{
-		_services = new FrameworkLibraryStartup(
-			new ConfigurationSetup()
-			.GetConfiguration())
+		_services = new FrameworkLibraryStartup(_appSettingsFilePath)
 			.GetFrameworkServiceProvider();
-
-		_logger = _services.GetRequiredService<ILogger<HomePage>>();
-		_driverManager = _services.GetRequiredService<IWebDriverManager>();
-
-		_homePage = new HomePage(_logger, _driverManager);
 	}
 
 	[SetUp]
 	public void SetUp()
 	{
-		var url = _services.GetRequiredService<IConfiguration>().GetSectionValue<string>(_applicationUrl);
+		var url = _services.GetRequiredService<IConfigurationService>()
+			.GetConfigurationValue<string>(_applicationUrl);
 
-		_driverManager.NavigateTo(url);
+		_loggerService = _services.GetRequiredService<ILoggerService>();
+		_driverService = _services.GetRequiredService<IWebDriverService>();
+
+		_homePage = new HomePage(_loggerService, _driverService);
+
+		_driverService.NavigateTo(url);
 	}
 
 	[Test]
@@ -48,14 +47,14 @@ public class CareersTest
 	{
 		_homePage.NavigateToCareersPage();
 
-		var actualUrl = _driverManager.GetInstanceOf().Url;
+		var actualUrl = _driverService.GetWebDriver().Url;
 
-		Assert.That(actualUrl.Contains("careers"));
+		Assert.That(actualUrl, Does.Contain("careers"));
 	}
 
 	[TearDown]
 	public void TearDown()
 	{
-		_driverManager.DisposeOf();
+		_driverService.DisposeWebDriver();
 	}
 }

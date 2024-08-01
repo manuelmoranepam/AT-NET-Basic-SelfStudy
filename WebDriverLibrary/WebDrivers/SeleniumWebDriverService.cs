@@ -55,6 +55,7 @@ public class SeleniumWebDriverService : IWebDriverService
 		var options = new EdgeOptions();
 
 		options.AddArgument("--inprivate");
+		options.PageLoadStrategy = _driverConfiguration.PageLoadStrategy;
 
 		if (_driverConfiguration.IsHeadless)
 			options.AddArgument("--headless");
@@ -78,6 +79,7 @@ public class SeleniumWebDriverService : IWebDriverService
 		var options = new ChromeOptions();
 
 		options.AddArgument("--incognito");
+		options.PageLoadStrategy = _driverConfiguration.PageLoadStrategy;
 
 		if (_driverConfiguration.IsHeadless)
 			options.AddArgument("--headless");
@@ -101,6 +103,7 @@ public class SeleniumWebDriverService : IWebDriverService
 		var options = new FirefoxOptions();
 
 		options.AddArgument("--private");
+		options.PageLoadStrategy = _driverConfiguration.PageLoadStrategy;
 
 		if (_driverConfiguration.IsHeadless)
 			options.AddArgument("--headless");
@@ -131,8 +134,11 @@ public class SeleniumWebDriverService : IWebDriverService
 
 	public void DisposeWebDriver()
 	{
-		_webDriver.Close();
-		_webDriver.Dispose();
+		if (_webDriver is not null)
+		{
+			_webDriver.Quit();
+			_webDriver.Dispose();
+		}
 	}
 
 	public void NavigateTo(string url)

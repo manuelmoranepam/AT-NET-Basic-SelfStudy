@@ -7,6 +7,15 @@ namespace WebDriverLibrary.Extensions;
 
 public static class IWebDriverWaitMechanismExtension
 {
+	public static void WaitUntilElementIsVisible(this IWebDriver webDriver, By locator, TimeSpan timeout, TimeSpan pollingInterval)
+	{
+		NullCheckAllParameters(webDriver, locator, timeout, pollingInterval);
+
+		var wait = new WebDriverWait(new SystemClock(), webDriver, timeout, pollingInterval);
+
+		wait.Until(ExpectedConditions.ElementIsVisible(locator));
+	}
+
 	public static void WaitUntilElementIsClickable(this IWebDriver webDriver, By locator, TimeSpan timeout, TimeSpan pollingInterval)
 	{
 		NullCheckAllParameters(webDriver, locator, timeout, pollingInterval);
@@ -14,6 +23,15 @@ public static class IWebDriverWaitMechanismExtension
 		var wait = new WebDriverWait(new SystemClock(), webDriver, timeout, pollingInterval);
 
 		wait.Until(ExpectedConditions.ElementToBeClickable(locator));
+	}
+
+	public static void WaitUntilElementExists(this IWebDriver webDriver, By locator, TimeSpan timeout, TimeSpan pollingInterval)
+	{
+		NullCheckAllParameters(webDriver, locator, timeout, pollingInterval);
+
+		var wait = new WebDriverWait(new SystemClock(), webDriver, timeout, pollingInterval);
+
+		wait.Until(ExpectedConditions.ElementExists(locator));
 	}
 
 	private static void NullCheckAllParameters(IWebDriver webDriver, By locator, TimeSpan timeout, TimeSpan pollingInterval)

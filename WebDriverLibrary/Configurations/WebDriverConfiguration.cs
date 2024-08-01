@@ -1,6 +1,7 @@
 ﻿using ConfigurationLibrary.Interfaces.Configurations;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using OpenQA.Selenium;
 using System;
 using WebDriverLibrary.Enums;
 using WebDriverLibrary.Interfaces.Configurations;
@@ -17,6 +18,9 @@ namespace WebDriverLibrary.Configurations
 
 		[JsonProperty(nameof(IsMaximized))]
 		public bool IsMaximized { get; set; }
+
+		[JsonProperty(nameof(PageLoadStrategy))]
+		public PageLoadStrategy PageLoadStrategy { get; set; }
 
 		[JsonProperty(nameof(PageLoadTimeout))]
 		public TimeSpan PageLoadTimeout { get; set; }

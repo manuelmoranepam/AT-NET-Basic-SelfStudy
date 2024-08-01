@@ -1,0 +1,20 @@
+[
+	{
+		"IsOnsite": false,
+		"IsRemote": true,
+		"JobName": ".NET Automation Test Engineer",
+		"Keyword": ".NET",
+		"Location": "All Locations",
+		"OpenToRelocation": false,
+		"Skills": [ "Software, System, and Test Engineering" ]
+	},
+	{
+		"IsOnsite": true,
+		"IsRemote": false,
+		"JobName": "JavaScript Automation Test Engineer",
+		"Keyword": "JavaScript",
+		"Location": "Guadalajara",
+		"OpenToRelocation": true,
+		"Skills": [ "Software, System, and Test Engineering" ]
+	}
+]

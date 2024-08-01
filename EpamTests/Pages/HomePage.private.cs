@@ -5,6 +5,30 @@ namespace EpamTests.Pages;
 
 public partial class HomePage
 {
+	private bool IsAcceptAllCookiesButtonDisplayed()
+	{
+		try
+		{
+			return AcceptAllCookiesButton.Displayed;
+		}
+		catch
+		{
+			_loggerService.LogInformation("The Accept All Cookies button is not displayed", _acceptAllCookiesButtonLocator);
+
+			return false;
+		}
+	}
+
+	private void ClickAcceptAllCookiesButton()
+	{
+		var isDisplayed = IsAcceptAllCookiesButtonDisplayed();
+
+		if (isDisplayed)
+		{
+			AcceptAllCookiesButton.Click();
+		}
+	}
+
 	private void ClickCareersLink()
 	{
 		try

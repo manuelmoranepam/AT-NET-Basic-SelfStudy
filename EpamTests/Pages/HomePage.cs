@@ -23,6 +23,11 @@ public partial class HomePage
 		_loggerService.LogInformation("HomePage instantiation complete.", []);
 	}
 
+	public void AcceptAllCookies()
+	{
+		ClickAcceptAllCookiesButton();
+	}
+
 	public void NavigateToCareersPage()
 	{
 		ClickCareersLink();

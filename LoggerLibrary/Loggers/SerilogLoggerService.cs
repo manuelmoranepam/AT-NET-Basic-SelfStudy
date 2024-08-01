@@ -38,4 +38,9 @@ public class SerilogLoggerService : ILoggerService
 	{
 		_logger.Fatal(exception, message, args);
 	}
+
+	public void CloseAndFlush()
+	{
+		_logger.Dispose();
+	}
 }

@@ -13,22 +13,24 @@ namespace FrameworkLibrary.Startup;
 
 public class FrameworkLibraryStartup
 {
-	private readonly IServiceProvider _services;
+	private readonly IServiceScopeFactory _scopeFactory;
 
 	public FrameworkLibraryStartup(string filePath)
 	{
 		ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
 
-		_services = new ServiceCollection()
+		var services = new ServiceCollection()
 			.AddSingleton<IConfigurationService>(new ConfigurationService(filePath))
 			.AddScoped<ILoggerService, SerilogLoggerService>()
 			.AddSingleton<IWebDriverConfiguration, WebDriverConfiguration>()
 			.AddScoped<IWebDriverService, SeleniumWebDriverService>()
 			.BuildServiceProvider();
+
+		_scopeFactory = services.GetRequiredService<IServiceScopeFactory>();
 	}
 
-	public IServiceProvider GetFrameworkServiceProvider()
+	public IServiceScopeFactory GetServiceScopeFactory()
 	{
-		return _services;
+		return _scopeFactory;
 	}
 }

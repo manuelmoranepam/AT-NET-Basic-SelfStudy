@@ -38,5 +38,23 @@ public partial class CareersPage
 
 		EnterKeyword(careerSearch.Keyword);
 		SelectSuggestion(careerSearch.JobName);
+
+		ToggleSkillsContainer(true);
+		SelectSkills(careerSearch.Skills);
+		ToggleSkillsContainer(false);
+
+		SelectRemoteCheckbox(careerSearch.IsRemote);
+		SelectOfficeCheckbox(careerSearch.IsOnsite);
+		SelectRelocationCheckbox(careerSearch.OpenToRelocation);
+	}
+
+	public void SubmitForm()
+	{
+		ClickFindButton();
+	}
+
+	public void SelectPositionResult(int index)
+	{
+		ClickViewAndApplyLink(index);
 	}
 }

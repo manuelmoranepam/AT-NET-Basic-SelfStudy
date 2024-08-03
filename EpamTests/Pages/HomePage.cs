@@ -32,4 +32,13 @@ public partial class HomePage
 	{
 		ClickCareersLink();
 	}
+
+	public void SearchFor(string searchText)
+	{
+		ArgumentException.ThrowIfNullOrWhiteSpace(searchText);
+
+		ClickSearchButton();
+		EnterSearchText(searchText);
+		ClickFindButton();
+	}
 }

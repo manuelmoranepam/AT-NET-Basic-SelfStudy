@@ -34,10 +34,27 @@ public static class IWebDriverWaitMechanismExtension
 		wait.Until(ExpectedConditions.ElementExists(locator));
 	}
 
+	public static void WaitForCondition(this IWebDriver webDriver, Func<IWebDriver, bool> condition, TimeSpan timeout, TimeSpan pollingInterval)
+	{
+		NullCheckAllParameters(condition, timeout, pollingInterval);
+
+		var wait = new WebDriverWait(new SystemClock(), webDriver, timeout, pollingInterval);
+
+		wait.Until(condition);
+	}
+
 	private static void NullCheckAllParameters(IWebDriver webDriver, By locator, TimeSpan timeout, TimeSpan pollingInterval)
 	{
 		ArgumentNullException.ThrowIfNull(webDriver);
 		ArgumentNullException.ThrowIfNull(locator);
+		ArgumentOutOfRangeException.ThrowIfLessThan(timeout, TimeSpan.FromSeconds(1));
+		ArgumentOutOfRangeException.ThrowIfLessThan(pollingInterval, TimeSpan.FromSeconds(1));
+		ArgumentOutOfRangeException.ThrowIfLessThan(timeout, pollingInterval);
+	}
+
+	private static void NullCheckAllParameters(Func<IWebDriver, bool> condition, TimeSpan timeout, TimeSpan pollingInterval)
+	{
+		ArgumentNullException.ThrowIfNull(condition);
 		ArgumentOutOfRangeException.ThrowIfLessThan(timeout, TimeSpan.FromSeconds(1));
 		ArgumentOutOfRangeException.ThrowIfLessThan(pollingInterval, TimeSpan.FromSeconds(1));
 		ArgumentOutOfRangeException.ThrowIfLessThan(timeout, pollingInterval);

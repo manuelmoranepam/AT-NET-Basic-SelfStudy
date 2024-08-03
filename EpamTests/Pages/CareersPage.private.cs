@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using WebDriverLibrary.Extensions;
 
@@ -140,7 +141,7 @@ public partial class CareersPage
 				_webDriverService.GetConfiguration().PollingInterval);
 
 			return LocationList
-				.First(element => element.Text.Trim()
+				.First(element => element.GetAttribute("textContent").Trim()
 					.Equals(location, StringComparison.OrdinalIgnoreCase));
 		}
 		catch (Exception exception)
@@ -159,7 +160,12 @@ public partial class CareersPage
 		{
 			var city = GetLocationElement(location);
 
-			city.Click();
+			new Actions(_driver)
+				.ScrollToElement(city)
+				.Pause(_webDriverService.GetConfiguration().PollingInterval)
+				.Click(city)
+				.Build()
+				.Perform();
 
 		}
 		catch (Exception exception)
@@ -183,12 +189,171 @@ public partial class CareersPage
 
 			if (isOpen != toggleOpen)
 			{
-				country.Click();
+				new Actions(_driver)
+					.ScrollToElement(country)
+					.Pause(_webDriverService.GetConfiguration().PollingInterval)
+					.Click()
+					.Build()
+					.Perform();
 			}
 		}
 		catch (Exception exception)
 		{
 			_loggerService.LogError(exception, $"Failed to click the country '{location}'.", _locationListLocator);
+
+			throw;
+		}
+	}
+
+	private void ToggleSkillsContainer(bool toggleOpen)
+	{
+		try
+		{
+			_driver.WaitUntilElementIsClickable(_skillsContainerTogglerLocator,
+				_webDriverService.GetConfiguration().LongTimeout,
+				_webDriverService.GetConfiguration().PollingInterval);
+
+			var isOpen = SkillsContainerToggler.GetAttribute("aria-expanded").Contains("true");
+
+			if (isOpen != toggleOpen)
+			{
+				SkillsContainerToggler.Click();
+			}
+		}
+		catch (Exception exception)
+		{
+			_loggerService.LogError(exception, "Failed to click the skills container toggler.", _skillsContainerTogglerLocator);
+
+			throw;
+		}
+	}
+
+	private void SelectSkills(List<string> skills)
+	{
+		ArgumentNullException.ThrowIfNull(skills);
+
+		try
+		{
+			_driver.WaitUntilElementIsVisible(_skillListLocator,
+				_webDriverService.GetConfiguration().LongTimeout,
+				_webDriverService.GetConfiguration().PollingInterval);
+
+			foreach (var skill in skills)
+			{
+				SkillList
+					.First(element => element.Text.Trim().Contains(skill, StringComparison.OrdinalIgnoreCase))
+					.Click();
+			}
+		}
+		catch (Exception exception)
+		{
+			_loggerService.LogError(exception, "Failed to select the skills.", _skillListLocator);
+
+			throw;
+		}
+	}
+
+	private void SelectRemoteCheckbox(bool isChecked)
+	{
+		try
+		{
+			_driver.WaitUntilElementIsClickable(_remoteCheckboxLabel,
+				_webDriverService.GetConfiguration().LongTimeout,
+				_webDriverService.GetConfiguration().PollingInterval);
+
+			var isSelected = RemoteHiddenCheckbox.Selected;
+
+			if (isSelected != isChecked)
+			{
+				RemoteCheckboxLabel.Click();
+			}
+		}
+		catch (Exception exception)
+		{
+			_loggerService.LogError(exception, "Failed to select the remote checkbox.", _remoteCheckboxLocator);
+
+			throw;
+		}
+	}
+
+	private void SelectOfficeCheckbox(bool isChecked)
+	{
+		try
+		{
+			_driver.WaitUntilElementIsClickable(_officeCheckboxLabel,
+				_webDriverService.GetConfiguration().LongTimeout,
+				_webDriverService.GetConfiguration().PollingInterval);
+
+			var isSelected = OfficeHiddenCheckbox.Selected;
+
+			if (isSelected != isChecked)
+			{
+				OfficeCheckboxLabel.Click();
+			}
+		}
+		catch (Exception exception)
+		{
+			_loggerService.LogError(exception, "Failed to select the office checkbox.", _officeCheckboxLocator);
+
+			throw;
+		}
+	}
+
+	private void SelectRelocationCheckbox(bool isChecked)
+	{
+		try
+		{
+			_driver.WaitUntilElementIsClickable(_relocationCheckboxLabel,
+				_webDriverService.GetConfiguration().LongTimeout,
+				_webDriverService.GetConfiguration().PollingInterval);
+
+			var isSelected = RelocationHiddenCheckbox.Selected;
+
+			if (isSelected != isChecked)
+			{
+				RelocationCheckboxLabel.Click();
+			}
+		}
+		catch (Exception exception)
+		{
+			_loggerService.LogError(exception, "Failed to select the relocation checkbox.", _relocationCheckboxLocator);
+
+			throw;
+		}
+	}
+
+	private void ClickFindButton()
+	{
+		try
+		{
+			_driver.WaitUntilElementIsClickable(_findButtonLocator,
+				_webDriverService.GetConfiguration().LongTimeout,
+				_webDriverService.GetConfiguration().PollingInterval);
+
+			FindButton.Click();
+		}
+		catch (Exception exception)
+		{
+			_loggerService.LogError(exception, "Failed to click the find button.", _findButtonLocator);
+
+			throw;
+		}
+	}
+
+	private void ClickViewAndApplyLink(int index)
+	{
+		try
+		{
+			_driver.WaitForCondition(_driver => ViewAndApplyLinkList[index].Displayed &&
+					ViewAndApplyLinkList[index].Enabled,
+				_webDriverService.GetConfiguration().LongTimeout,
+				_webDriverService.GetConfiguration().PollingInterval);
+
+			ViewAndApplyLinkList[index].Click();
+		}
+		catch (Exception exception)
+		{
+			_loggerService.LogError(exception, "Failed to click the view and apply link.", _viewAndApplyLinkListLocator);
 
 			throw;
 		}

@@ -136,6 +136,7 @@ public class SeleniumWebDriverService : IWebDriverService
 	{
 		if (_webDriver is not null)
 		{
+			_webDriver.Close();
 			_webDriver.Quit();
 			_webDriver.Dispose();
 		}
@@ -146,5 +147,10 @@ public class SeleniumWebDriverService : IWebDriverService
 		ArgumentException.ThrowIfNullOrWhiteSpace(url);
 
 		_webDriver.Navigate().GoToUrl(url);
+	}
+
+	public string GetCurrentUrl()
+	{
+		return _webDriver.Url;
 	}
 }

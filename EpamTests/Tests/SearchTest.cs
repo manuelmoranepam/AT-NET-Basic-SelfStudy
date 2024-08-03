@@ -1,19 +1,18 @@
 ﻿using ConfigurationLibrary.Interfaces.Configurations;
-using EpamTests.Interfaces.Models.Careers;
-using EpamTests.Models.Careers;
 using EpamTests.Pages;
-using EpamTests.TestData;
 using FrameworkLibrary.Startup;
 using LoggerLibrary.Interfaces.Loggers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using System;
+using System.Linq;
 using WebDriverLibrary.Interfaces.WebDrivers;
 
 namespace EpamTests.Tests;
 
 [TestFixture]
 [Parallelizable(ParallelScope.Self)]
-public class CareersTest
+public class SearchTest
 {
 	private const string _appSettingsFilePath = "appsettings.json";
 	private const string _applicationUrl = "ApplicationUrl";
@@ -24,10 +23,9 @@ public class CareersTest
 	private ILoggerService _loggerService;
 	private IWebDriverService _driverService;
 	private HomePage _homePage;
-	private CareersPage _careersPage;
-	private JobListingPage _jobListingPage;
+	private SearchPage _searchPage;
 
-	public CareersTest()
+	public SearchTest()
 	{
 		_scopeFactory = new FrameworkLibraryStartup(_appSettingsFilePath)
 			.GetServiceScopeFactory();
@@ -45,25 +43,38 @@ public class CareersTest
 		_driverService = _scope.ServiceProvider.GetRequiredService<IWebDriverService>();
 
 		_homePage = new HomePage(_loggerService, _driverService);
-		_careersPage = new CareersPage(_loggerService, _driverService);
-		_jobListingPage = new JobListingPage(_loggerService, _driverService);
+		_searchPage = new SearchPage(_loggerService, _driverService);
 
 		_driverService.NavigateTo(url);
 	}
 
-	[Test, TestCaseSource(typeof(TestDataLoader<CareerSearch>), nameof(TestDataLoader<CareerSearch>.LoadTestData), new object[] { "TestData/Models/Careers/CareerSearch.json" })]
-	public void CareerPage_WhenSearchingForACareer_LatestElementContainsProgrammingLanguage(ICareerSearch careerSearch)
+	[Test]
+	[TestCase("BLOCKCHAIN")]
+	[TestCase("Cloud")]
+	[TestCase("Automation")]
+	public void Search_WhenSearchingForSomething_ResultIsNotEmpty(string searchText)
 	{
 		_homePage.AcceptAllCookies();
-		_homePage.NavigateToCareersPage();
+		_homePage.SearchFor(searchText);
 
-		_careersPage.FillCareersForm(careerSearch);
-		_careersPage.SubmitForm();
-		_careersPage.SelectPositionResult(0);
+		var searchResults = _searchPage.GetSearchResults();
 
-		var jobTitle = _jobListingPage.GetJobTitle();
+		Assert.Multiple(() =>
+		{
+			var isSearchTextContained = searchResults.All(result => result.Heading.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+					result.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase));
 
-		Assert.That(jobTitle, Does.Contain(careerSearch.JobName));
+			Assert.That(isSearchTextContained, Is.True);
+
+			var resultsNotContainingSearchText = searchResults.Where(result => !result.Heading.Contains(searchText, StringComparison.OrdinalIgnoreCase) &&
+					!result.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+
+			Assert.That(resultsNotContainingSearchText.Any(), Is.False);
+
+			resultsNotContainingSearchText.ToList().ForEach(result =>
+				_loggerService.LogInformation("Search result not containing '{0}':\n\tHeading: {1}\n\tDescription: {2}",
+					[searchText, result.Heading, result.Description]));
+		});
 	}
 
 	[TearDown]

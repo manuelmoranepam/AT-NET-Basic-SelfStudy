@@ -9,4 +9,5 @@ public interface IWebDriverService
 	IWebDriver GetWebDriver();
 	void DisposeWebDriver();
 	void NavigateTo(string url);
+	string GetCurrentUrl();
 }

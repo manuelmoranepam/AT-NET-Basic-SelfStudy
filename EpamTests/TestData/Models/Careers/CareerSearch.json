@@ -10,10 +10,10 @@
 	},
 	{
 		"IsOnsite": true,
-		"IsRemote": false,
-		"JobName": "JavaScript Automation Test Engineer",
-		"Keyword": "JavaScript",
-		"Location": "Guadalajara",
+		"IsRemote": true,
+		"JobName": ".NET Lead Developer",
+		"Keyword": ".NET",
+		"Location": "All Cities in Mexico",
 		"OpenToRelocation": true,
 		"Skills": [ "Software, System, and Test Engineering" ]
 	}
